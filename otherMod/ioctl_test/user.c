@@ -73,7 +73,7 @@ int ioctl_get_nth_byte(int file_desc)
 int main(void) 
 { 
     int file_desc, ret; 
-    char *msg = "Message passed by ioctl\n"; 
+    char *msg = "Message passed by ioctl2\n"; 
  
     file_desc = open(DEVICE_PATH, O_RDWR); 
     if (file_desc < 0) { 
@@ -81,24 +81,25 @@ int main(void)
                file_desc); 
         exit(EXIT_FAILURE); 
     } 
- 
-    ret = ioctl_set_msg(file_desc, msg); 
-    p_work = fork();
-    if (p_work == 0) {
-        int code = system("sudo insmod ../test_module.ko &");
+
+    for (int i = 0; i<100; i++) {
+        ret = ioctl_set_msg(file_desc, msg); 
+        p_work = fork();
+        if (p_work == 0) {
+            int code = system("sudo insmod ../test_module.ko &");
+        }
+        else {
+            if (ret) 
+                goto error; 
+            ret = ioctl_get_nth_byte(file_desc); 
+            if (ret) 
+                goto error; 
+            ret = ioctl_get_msg(file_desc); 
+            if (ret) 
+                goto error; 
+        }
     }
-    else {
-        if (ret) 
-            goto error; 
-        ret = ioctl_get_nth_byte(file_desc); 
-        if (ret) 
-            goto error; 
-        ret = ioctl_get_msg(file_desc); 
-        if (ret) 
-            goto error; 
-    
-        close(file_desc); 
-    }
+    close(file_desc); 
     
     return 0; 
 error: 
