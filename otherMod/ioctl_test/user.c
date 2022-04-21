@@ -126,7 +126,7 @@ int main(void)
             if (ret) 
                 goto error; 
         }
-        sleep(1);
+        sleep(1000);
     }
 
 loop_out:
