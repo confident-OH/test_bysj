@@ -43,7 +43,7 @@ int ioctl_get_msg(int file_desc)
     if (ret < 0) { 
         printf("ioctl_get_msg failed:%d\n", ret); 
     } 
-    printf("get_msg message:%s", message); 
+    // printf("get_msg message:%s", message); 
  
     return ret; 
 } 
@@ -52,7 +52,7 @@ int ioctl_get_nth_byte(int file_desc)
 { 
     int i, c; 
  
-    printf("get_nth_byte message:"); 
+    // printf("get_nth_byte message:"); 
  
     i = 0; 
     do { 
