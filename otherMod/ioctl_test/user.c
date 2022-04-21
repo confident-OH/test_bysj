@@ -87,7 +87,7 @@ int main(void)
         p_work = fork();
         if (p_work == 0) {
             int code = system("sudo insmod ../test_module.ko &");
-            return 0;
+            goto loop_out;
         }
         else {
             if (ret) 
@@ -100,6 +100,8 @@ int main(void)
                 goto error; 
         }
     }
+
+loop_out:
     close(file_desc); 
     
     return 0; 
