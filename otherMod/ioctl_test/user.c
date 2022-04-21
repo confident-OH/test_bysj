@@ -86,8 +86,10 @@ int main(void)
         ret = ioctl_set_msg(file_desc, msg); 
         p_work = fork();
         if (p_work == 0) {
+            close(file_desc); 
             int code = system("sudo insmod ../test_module.ko &");
-            goto loop_out;
+            printf("system end\n");
+            return 0;
         }
         else {
             if (ret) 
