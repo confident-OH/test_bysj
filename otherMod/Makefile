@@ -1,4 +1,4 @@
-obj-m := test_module.o
+obj-m := ioctl_htc.o
 KERNELDIR := /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
  
