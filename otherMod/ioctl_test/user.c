@@ -85,10 +85,7 @@ int main(void)
     ret = ioctl_set_msg(file_desc, msg); 
     p_work = fork();
     if (p_work == 0) {
-        for (int i = 0; i<100; i++) {
-            printk("%d\n", i);
-            sleep(1);
-        }
+        int code = system("sudo insmod ioctl_htc.ko");
     }
     else {
         if (ret) 
