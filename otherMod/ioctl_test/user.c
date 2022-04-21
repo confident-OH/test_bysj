@@ -89,7 +89,7 @@ int main(void)
             close(file_desc); 
             int code = system("sudo insmod ../test_module.ko &");
             printf("system end\n");
-            return 0;
+            exit(0);
         }
         else {
             if (ret) 
