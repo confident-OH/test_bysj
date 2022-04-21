@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "fs.h": "c",
+        "sched.h": "c",
+        "kernel.h": "c",
+        "uio.h": "c"
+    }
+}
