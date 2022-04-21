@@ -14,7 +14,7 @@
  
 #include "ioctl_htc.h" 
 #define SUCCESS 0 
-#define DEVICE_NAME "char_dev" 
+#define DEVICE_NAME "ioctl_htc_dev" 
 #define BUF_LEN 80 
  
 enum { 

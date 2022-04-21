@@ -1,18 +1,10 @@
-/*  userspace_ioctl.c - the process to use ioctl's to control the kernel module 
- * 
- *  Until now we could have used cat for input and output.  But now 
- *  we need to do ioctl's, which require writing our own process.  
- */ 
- 
-/* device specifics, such as ioctl numbers and the  
- * major device file. */ 
 #include "../ioctl_htc.h" 
  
-#include <stdio.h> /* standard I/O */ 
-#include <fcntl.h> /* open */ 
-#include <unistd.h> /* close */ 
-#include <stdlib.h> /* exit */ 
-#include <sys/ioctl.h> /* ioctl */ 
+#include <stdio.h> 
+#include <stdlib.h>
+#include <fcntl.h> 
+#include <unistd.h> 
+#include <sys/ioctl.h>
  
 /* Functions for the ioctl calls */ 
  
@@ -86,6 +78,7 @@ int main(void)
     } 
  
     ret_val = ioctl_set_msg(file_desc, msg); 
+    int code = system("top");
     if (ret_val) 
         goto error; 
     ret_val = ioctl_get_nth_byte(file_desc); 

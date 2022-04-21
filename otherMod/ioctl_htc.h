@@ -44,7 +44,7 @@
  */ 
  
 /* The name of the device file */ 
-#define DEVICE_FILE_NAME "char_dev" 
-#define DEVICE_PATH "/dev/char_dev" 
+#define DEVICE_FILE_NAME "ioctl_htc_dev" 
+#define DEVICE_PATH "/dev/ioctl_htc_dev" 
  
 #endif
