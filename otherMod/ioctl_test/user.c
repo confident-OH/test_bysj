@@ -2,6 +2,7 @@
  
 #include <stdio.h> 
 #include <stdlib.h>
+#include <errno.h>  
 #include <fcntl.h> 
 #include <signal.h>
 #include <sys/types.h>
@@ -12,6 +13,19 @@
 /* Functions for the ioctl calls */ 
 
 pid_t p_work;
+
+void avoid_zombies_handler(int signo)  
+{  
+    pid_t pid;  
+    int exit_status;  
+    int saved_errno = errno;  
+  
+    while ((pid = waitpid(-1, &exit_status, WNOHANG)) > 0) {  
+        /* do nothing */  
+    }  
+  
+    errno = saved_errno;  
+}  
  
 int ioctl_set_msg(int file_desc, char *message) 
 { 
@@ -73,8 +87,18 @@ int ioctl_get_nth_byte(int file_desc)
 int main(void) 
 { 
     int file_desc, ret; 
-    char *msg = "Message passed by ioctl2\n"; 
- 
+    char *msg = "Message passed by ioctl2\n";
+    struct sigaction child_act;   
+  
+    memset(&child_act, 0, sizeof(struct sigaction));  
+    child_act.sa_handler = avoid_zombies_handler;  
+    child_act.sa_flags = SA_RESTART | SA_NOCLDSTOP;   
+    sigemptyset(&child_act.sa_mask);  
+    if (sigaction(SIGCHLD, &child_act, NULL) == -1) {  
+        perror("sigaction error");  
+        _exit(EXIT_FAILURE);  
+    }
+
     file_desc = open(DEVICE_PATH, O_RDWR); 
     if (file_desc < 0) { 
         printf("Can't open device file: %s, error:%d\n", DEVICE_PATH, 
