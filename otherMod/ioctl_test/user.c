@@ -3,27 +3,32 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <fcntl.h> 
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h> 
 #include <sys/ioctl.h>
  
 /* Functions for the ioctl calls */ 
+
+pid_t p_work;
  
 int ioctl_set_msg(int file_desc, char *message) 
 { 
-    int ret_val; 
+    int ret; 
  
-    ret_val = ioctl(file_desc, IOCTL_SET_MSG, message); 
+    ret = ioctl(file_desc, IOCTL_SET_MSG, message); 
  
-    if (ret_val < 0) { 
-        printf("ioctl_set_msg failed:%d\n", ret_val); 
+    if (ret < 0) { 
+        printf("ioctl_set_msg failed:%d\n", ret); 
     } 
  
-    return ret_val; 
+    return ret; 
 } 
  
 int ioctl_get_msg(int file_desc) 
 { 
-    int ret_val; 
+    int ret; 
     char message[100] = { 0 }; 
  
     /* Warning - this is dangerous because we don't tell  
@@ -33,14 +38,14 @@ int ioctl_get_msg(int file_desc)
    * the kernel the buffer length and another to give  
    * it the buffer to fill 
    */ 
-    ret_val = ioctl(file_desc, IOCTL_GET_MSG, message); 
+    ret = ioctl(file_desc, IOCTL_GET_MSG, message); 
  
-    if (ret_val < 0) { 
-        printf("ioctl_get_msg failed:%d\n", ret_val); 
+    if (ret < 0) { 
+        printf("ioctl_get_msg failed:%d\n", ret); 
     } 
     printf("get_msg message:%s", message); 
  
-    return ret_val; 
+    return ret; 
 } 
  
 int ioctl_get_nth_byte(int file_desc) 
@@ -67,7 +72,7 @@ int ioctl_get_nth_byte(int file_desc)
 /* Main - Call the ioctl functions */ 
 int main(void) 
 { 
-    int file_desc, ret_val; 
+    int file_desc, ret; 
     char *msg = "Message passed by ioctl\n"; 
  
     file_desc = open(DEVICE_PATH, O_RDWR); 
@@ -77,18 +82,27 @@ int main(void)
         exit(EXIT_FAILURE); 
     } 
  
-    ret_val = ioctl_set_msg(file_desc, msg); 
-    int code = system("top");
-    if (ret_val) 
-        goto error; 
-    ret_val = ioctl_get_nth_byte(file_desc); 
-    if (ret_val) 
-        goto error; 
-    ret_val = ioctl_get_msg(file_desc); 
-    if (ret_val) 
-        goto error; 
- 
-    close(file_desc); 
+    ret = ioctl_set_msg(file_desc, msg); 
+    p_work = fork();
+    if (p_work == 0) {
+        for (int i = 0; i<100; i++) {
+            printk("%d\n", i);
+            sleep(1);
+        }
+    }
+    else {
+        if (ret) 
+            goto error; 
+        ret = ioctl_get_nth_byte(file_desc); 
+        if (ret) 
+            goto error; 
+        ret = ioctl_get_msg(file_desc); 
+        if (ret) 
+            goto error; 
+    
+        close(file_desc); 
+    }
+    
     return 0; 
 error: 
     close(file_desc); 
