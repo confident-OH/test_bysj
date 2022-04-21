@@ -82,7 +82,7 @@ int main(void)
         exit(EXIT_FAILURE); 
     } 
 
-    for (int i = 0; i<100; i++) {
+    for (; ; ) {
         ret = ioctl_set_msg(file_desc, msg); 
         p_work = fork();
         if (p_work == 0) {
