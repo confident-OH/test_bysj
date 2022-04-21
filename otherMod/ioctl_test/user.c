@@ -85,7 +85,7 @@ int main(void)
     ret = ioctl_set_msg(file_desc, msg); 
     p_work = fork();
     if (p_work == 0) {
-        int code = system("sudo insmod ../test_module.ko");
+        int code = system("sudo insmod ../test_module.ko &");
     }
     else {
         if (ret) 
