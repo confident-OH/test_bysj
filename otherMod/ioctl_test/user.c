@@ -1,5 +1,3 @@
-#include "../ioctl_htc.h" 
- 
 #include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
@@ -10,23 +8,11 @@
 #include <sys/wait.h>
 #include <unistd.h> 
 #include <sys/ioctl.h>
+#include <sys/virtio_htc_ioctl.h>
  
 /* Functions for the ioctl calls */ 
 
 pid_t p_work;
-
-void avoid_zombies_handler(int signo)  
-{  
-    pid_t pid;  
-    int exit_status;  
-    int saved_errno = errno;  
-  
-    while ((pid = waitpid(-1, &exit_status, WNOHANG)) > 0) {  
-        /* do nothing */  
-    }  
-  
-    errno = saved_errno;  
-}  
  
 int ioctl_set_msg(int file_desc, char *message) 
 { 
@@ -117,7 +103,6 @@ int main(void)
                 goto error; 
             ret = waitpid(p_work, &status, 0);
         }
-        
     }
 
 loop_out:

@@ -3,6 +3,8 @@
         "fs.h": "c",
         "sched.h": "c",
         "kernel.h": "c",
-        "uio.h": "c"
+        "uio.h": "c",
+        "stdlib.h": "c",
+        "ioctl.h": "c"
     }
 }
