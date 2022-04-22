@@ -87,18 +87,8 @@ int ioctl_get_nth_byte(int file_desc)
 /* Main - Call the ioctl functions */ 
 int main(void) 
 { 
-    int file_desc, ret; 
+    int file_desc, ret, status; 
     char *msg = "Message passed by ioctl2\n";
-    struct sigaction child_act;   
-  
-    memset(&child_act, 0, sizeof(struct sigaction));  
-    child_act.sa_handler = avoid_zombies_handler;  
-    child_act.sa_flags = SA_RESTART | SA_NOCLDSTOP;   
-    sigemptyset(&child_act.sa_mask);  
-    if (sigaction(SIGCHLD, &child_act, NULL) == -1) {  
-        perror("sigaction error");  
-        _exit(EXIT_FAILURE);  
-    }
 
     file_desc = open(DEVICE_PATH, O_RDWR); 
     if (file_desc < 0) { 
@@ -112,7 +102,7 @@ int main(void)
         p_work = fork();
         if (p_work == 0) {
             close(file_desc); 
-            int code = system("sudo insmod ../test_module.ko &");
+            int code = system("sudo ls &");
             printf("system end\n");
             exit(0);
         }
@@ -125,8 +115,9 @@ int main(void)
             ret = ioctl_get_msg(file_desc); 
             if (ret) 
                 goto error; 
+            ret = waitpid(p_work, &status, 0);
         }
-        sleep(1000);
+        
     }
 
 loop_out:
