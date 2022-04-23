@@ -14,13 +14,13 @@
 
 pid_t p_work;
 
-char message[100] = { 0 };
+union virtio_htc_ioctl_message message;
  
-int ioctl_set_msg(int file_desc, char *message) 
+int ioctl_set_msg(int file_desc, union virtio_htc_ioctl_message *message) 
 { 
     int ret; 
  
-    ret = ioctl(file_desc, IOCTL_SET_MSG, message); 
+    ret = ioctl(file_desc, IOCTL_SET_MSG, message->message); 
  
     if (ret < 0) { 
         printf("ioctl_set_msg failed:%d\n", ret); 
@@ -39,33 +39,14 @@ int ioctl_get_msg(int file_desc)
    * the kernel the buffer length and another to give  
    * it the buffer to fill 
    */ 
-    ret = ioctl(file_desc, IOCTL_GET_MSG, message); 
+    ret = ioctl(file_desc, IOCTL_GET_MSG, message.message); 
  
     if (ret < 0) { 
         printf("ioctl_get_msg failed:%d\n", ret); 
     } 
  
     return ret; 
-} 
- 
-int ioctl_get_nth_byte(int file_desc) 
-{ 
-    int i, c; 
- 
-    i = 0; 
-    do { 
-        c = ioctl(file_desc, IOCTL_GET_NTH_BYTE, i++); 
- 
-        if (c < 0) { 
-            printf("\nioctl_get_nth_byte failed at the %d'th byte:\n", i); 
-            return c; 
-        } 
- 
-        putchar(c); 
-    } while (c != 0); 
- 
-    return 0; 
-} 
+}
  
 /* Main - Call the ioctl functions */ 
 int main(void) 
@@ -84,17 +65,14 @@ int main(void)
         if (ret) {
             goto error; 
         }
-        len = strlen(message);
-        if (len > 0 && message[len - 1] != 1) {
+        if (message.command_message.status == 1) {
             printf("%s\n", message);
-            message[len +1] = '\0';
-            message[len] = 1;
-            ret = ioctl_set_msg(file_desc, message);
+            message.command_message.status = 0;
+            ret = ioctl_set_msg(file_desc, message.message);
             p_work = fork();
             if (p_work == 0) {
                 close(file_desc); 
                 int code = system("sudo ls &");
-                printf("system end\n");
                 exit(0);
             }
             else {
