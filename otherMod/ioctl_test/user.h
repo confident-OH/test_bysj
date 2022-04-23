@@ -2,7 +2,6 @@
 #define VIRTIO_HTC_IOCTL 
  
 #include <sys/ioctl.h>
-#include <sys/virtio_htc.h>
  
 /* The major device number. We can not rely on dynamic registration 
  * any more, because ioctls need to know it. 
@@ -42,6 +41,21 @@
 #define BUF_LEN 1024
 
 #define RUN_LINE_COMMAND 1
+
+typedef struct htc_command_config
+{
+    int64_t id;
+    char command_str[256];
+}htc_command_config;
+
+typedef struct htc_return_host
+{
+    int status;
+    union
+    {
+        htc_command_config htc_command;
+    };
+}htc_return_host;
 
 union virtio_htc_ioctl_message
 {
