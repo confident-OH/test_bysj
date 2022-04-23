@@ -79,6 +79,7 @@ int main(void)
                 ret = waitpid(p_work, &status, 0);
             }
         }
+        msleep(10);
     }
 
 loop_out:
