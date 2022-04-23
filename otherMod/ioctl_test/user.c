@@ -90,6 +90,7 @@ int main(void)
             printf("%s\n", message);
             message[len +1] = '\0';
             message[len] = 1;
+            ret = ioctl_set_msg(file_desc, message);
             p_work = fork();
             if (p_work == 0) {
                 close(file_desc); 
@@ -101,7 +102,6 @@ int main(void)
                 ret = waitpid(p_work, &status, 0);
             }
         }
-        
     }
 
 loop_out:
