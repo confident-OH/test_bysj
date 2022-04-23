@@ -5,6 +5,7 @@
         "kernel.h": "c",
         "uio.h": "c",
         "stdlib.h": "c",
-        "ioctl.h": "c"
+        "ioctl.h": "c",
+        "unistd.h": "c"
     }
 }

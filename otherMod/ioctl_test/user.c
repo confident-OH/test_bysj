@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include <unistd.h> 
 #include <sys/ioctl.h>
-#include <sys/virtio_htc_ioctl.h>
+#include <user.h>
  
 /* Functions for the ioctl calls */ 
 
@@ -44,7 +44,7 @@ int ioctl_get_msg(int file_desc)
     if (ret < 0) { 
         printf("ioctl_get_msg failed:%d\n", ret); 
     } 
-    // printf("get_msg message:%s", message); 
+    printf("get_msg message:%s", message); 
  
     return ret; 
 } 
@@ -52,8 +52,6 @@ int ioctl_get_msg(int file_desc)
 int ioctl_get_nth_byte(int file_desc) 
 { 
     int i, c; 
- 
-    // printf("get_nth_byte message:"); 
  
     i = 0; 
     do { 
@@ -74,7 +72,6 @@ int ioctl_get_nth_byte(int file_desc)
 int main(void) 
 { 
     int file_desc, ret, status; 
-    char *msg = "Message passed by ioctl2\n";
 
     file_desc = open(DEVICE_PATH, O_RDWR); 
     if (file_desc < 0) { 
@@ -84,7 +81,6 @@ int main(void)
     } 
 
     for (; ; ) {
-        ret = ioctl_set_msg(file_desc, msg); 
         p_work = fork();
         if (p_work == 0) {
             close(file_desc); 
@@ -93,11 +89,6 @@ int main(void)
             exit(0);
         }
         else {
-            if (ret) 
-                goto error; 
-            ret = ioctl_get_nth_byte(file_desc); 
-            if (ret) 
-                goto error; 
             ret = ioctl_get_msg(file_desc); 
             if (ret) 
                 goto error; 
