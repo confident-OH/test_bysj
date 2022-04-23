@@ -65,9 +65,9 @@ int main(void)
         if (ret) {
             goto error; 
         }
-        if (message.command_message.status == 1) {
+        if (message.command_message.status == 0) {
             printf("%s\n", message);
-            message.command_message.status = 0;
+            message.command_message.status = 1;
             ret = ioctl_set_msg(file_desc, message.message);
             p_work = fork();
             if (p_work == 0) {
