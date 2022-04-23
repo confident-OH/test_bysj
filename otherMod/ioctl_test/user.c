@@ -44,7 +44,6 @@ int ioctl_get_msg(int file_desc)
     if (ret < 0) { 
         printf("ioctl_get_msg failed:%d\n", ret); 
     } 
-    printf("get_msg message:%s\n", message); 
  
     return ret; 
 } 
