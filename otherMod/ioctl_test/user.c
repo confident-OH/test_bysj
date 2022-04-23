@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include <unistd.h> 
 #include <sys/ioctl.h>
-#include <user.h>
+#include "user.h"
  
 /* Functions for the ioctl calls */ 
 
