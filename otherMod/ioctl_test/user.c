@@ -44,7 +44,7 @@ int ioctl_get_msg(int file_desc)
     if (ret < 0) { 
         printf("ioctl_get_msg failed:%d\n", ret); 
     } 
- 
+    printf("test: %s\n", message.command_message.htc_command.command_str);
     return ret; 
 }
  
