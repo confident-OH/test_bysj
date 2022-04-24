@@ -51,7 +51,7 @@ int ioctl_get_msg(int file_desc)
 /* Main - Call the ioctl functions */ 
 int main(void) 
 { 
-    int file_desc, ret, status, len; 
+    int file_desc, ret, status, len;
 
     file_desc = open(DEVICE_PATH, O_RDWR); 
     if (file_desc < 0) { 
@@ -65,6 +65,7 @@ int main(void)
         if (ret) {
             goto error; 
         }
+        sleep(20);
         if (message.command_message.status == 0) {
             printf("%s\n", message.command_message.htc_command.command_str);
             message.command_message.status = 1;
