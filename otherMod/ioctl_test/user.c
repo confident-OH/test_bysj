@@ -66,13 +66,11 @@ int main(void)
             goto error; 
         }
         if (message.command_message.status == 0) {
-            printf("%s\n", message);
+            printf("%s\n", message.command_message.htc_command.command_str);
             message.command_message.status = 1;
-            
             p_work = fork();
             if (p_work == 0) {
-                close(file_desc); 
-                printf("will start %s\n", message.command_message.htc_command.command_str);
+                close(file_desc);
                 int code = system(message.command_message.htc_command.command_str);
                 exit(0);
             }
