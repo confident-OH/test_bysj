@@ -58,7 +58,8 @@ int main(void)
         printf("Can't open device file: %s, error:%d\n", DEVICE_PATH, 
                file_desc); 
         exit(EXIT_FAILURE); 
-    } 
+    }
+    sleep(20);
 
     for (; ; ) {
         ret = ioctl_get_msg(file_desc); 
