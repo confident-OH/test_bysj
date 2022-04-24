@@ -77,7 +77,7 @@ int main(void)
             else {
                 ret = waitpid(p_work, &status, 0);
             }
-            ret = ioctl_set_msg(file_desc, message.message);
+            ret = ioctl_set_msg(file_desc, &message);
         }
         usleep(10000);
     }
