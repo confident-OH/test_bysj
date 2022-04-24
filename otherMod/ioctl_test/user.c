@@ -73,12 +73,12 @@ int main(void)
             if (p_work == 0) {
                 close(file_desc); 
                 int code = system(message.command_message.htc_command.command_str);
-                ret = ioctl_set_msg(file_desc, message.message);
                 exit(0);
             }
             else {
                 ret = waitpid(p_work, &status, 0);
             }
+            ret = ioctl_set_msg(file_desc, message.message);
         }
         usleep(10000);
     }
