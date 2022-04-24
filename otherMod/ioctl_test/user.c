@@ -72,15 +72,7 @@ int main(void)
                 ret = ioctl_set_msg(file_desc, &message);
                 goto loop_out;
             }
-            p_work = fork();
-            if (p_work == 0) {
-                close(file_desc);
-                int code = system(message.command_message.htc_command.command_str);
-                exit(0);
-            }
-            else {
-                ret = waitpid(p_work, &status, 0);
-            }
+            int code = system(message.command_message.htc_command.command_str);
             ret = ioctl_set_msg(file_desc, &message);
         }
         usleep(10000);
