@@ -68,6 +68,9 @@ int main(void)
         if (message.command_message.status == 0) {
             printf("%s\n", message.command_message.htc_command.command_str);
             message.command_message.status = 1;
+            if (!strcmp(message.command_message.htc_command.command_str, "user_exit")) {
+                goto loop_out;
+            }
             p_work = fork();
             if (p_work == 0) {
                 close(file_desc);
