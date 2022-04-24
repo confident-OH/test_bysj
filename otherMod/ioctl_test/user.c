@@ -66,13 +66,13 @@ int main(void)
             goto error; 
         }
         if (message.command_message.status == 0) {
-            printf("%s\n", message.command_message.htc_command.command_str);
+            printf("%s\n", message.command_message.command_str);
             message.command_message.status = 1;
-            if (!strcmp(message.command_message.htc_command.command_str, "user_exit")) {
+            if (!strcmp(message.command_message.command_str, "user_exit")) {
                 ret = ioctl_set_msg(file_desc, &message);
                 goto loop_out;
             }
-            int code = system(message.command_message.htc_command.command_str);
+            int code = system(message.command_message.command_str);
             ret = ioctl_set_msg(file_desc, &message);
         }
         usleep(10000);

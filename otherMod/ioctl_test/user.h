@@ -42,25 +42,16 @@
 
 #define RUN_LINE_COMMAND 1
 
-typedef struct htc_command_config
-{
-    int64_t id;
-    char command_str[256];
-}htc_command_config;
-
-typedef struct htc_return_host
+typedef struct htc_ioctl_message_info
 {
     int status;
-    union
-    {
-        htc_command_config htc_command;
-    };
-}htc_return_host;
+    char command_str[256];
+}htc_ioctl_message_info;
 
-union virtio_htc_ioctl_message
+typedef union virtio_htc_ioctl_message
 {
     char message[BUF_LEN];
-    struct htc_return_host command_message;
-};
+    htc_ioctl_message_info command_message;
+}virtio_htc_ioctl_message;
  
 #endif
