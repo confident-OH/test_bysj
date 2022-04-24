@@ -68,11 +68,12 @@ int main(void)
         if (message.command_message.status == 0) {
             printf("%s\n", message);
             message.command_message.status = 1;
-            ret = ioctl_set_msg(file_desc, message.message);
+            
             p_work = fork();
             if (p_work == 0) {
                 close(file_desc); 
-                int code = system("sudo ls &");
+                int code = system(message.command_message.htc_command.command_str);
+                ret = ioctl_set_msg(file_desc, message.message);
                 exit(0);
             }
             else {
