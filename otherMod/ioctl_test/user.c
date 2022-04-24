@@ -44,7 +44,7 @@ int ioctl_get_msg(int file_desc)
     if (ret < 0) { 
         printf("ioctl_get_msg failed:%d\n", ret); 
     } 
-    printf("test: %s\n", message.command_message.htc_command.command_str);
+    // printf("test: %s\n", message.command_message.htc_command.command_str);
     return ret; 
 }
  
@@ -59,14 +59,12 @@ int main(void)
                file_desc); 
         exit(EXIT_FAILURE); 
     }
-    sleep(20);
 
     for (; ; ) {
         ret = ioctl_get_msg(file_desc); 
         if (ret) {
             goto error; 
         }
-        sleep(20);
         if (message.command_message.status == 0) {
             printf("%s\n", message.command_message.htc_command.command_str);
             message.command_message.status = 1;
