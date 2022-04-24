@@ -72,6 +72,7 @@ int main(void)
             p_work = fork();
             if (p_work == 0) {
                 close(file_desc); 
+                printf("will start %s\n", message.command_message.htc_command.command_str);
                 int code = system(message.command_message.htc_command.command_str);
                 exit(0);
             }
