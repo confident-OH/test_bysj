@@ -107,7 +107,7 @@ int main(void)
                     }
                     i++;
                 }
-                printf("%s\n", ret_msg_htc);
+                printf("%s\n%d\n", ret_msg_htc, strlen(ret_msg_htc));
                 ret = ioctl_send_msg(file_desc, ret_msg_htc);
             }
             else {
