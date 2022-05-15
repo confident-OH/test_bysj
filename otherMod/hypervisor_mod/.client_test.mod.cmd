@@ -1,0 +1,1 @@
+cmd_/home/leo/codes/work_test/otherMod/hypervisor_mod/client_test.mod := { echo  /home/leo/codes/work_test/otherMod/hypervisor_mod/client_test.o;  echo; } > /home/leo/codes/work_test/otherMod/hypervisor_mod/client_test.mod

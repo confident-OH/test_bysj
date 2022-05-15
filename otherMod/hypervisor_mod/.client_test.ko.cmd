@@ -1,0 +1,1 @@
+cmd_/home/leo/codes/work_test/otherMod/hypervisor_mod/client_test.ko := ld -r  -m elf_x86_64  --build-id=sha1  -T scripts/module.lds -o /home/leo/codes/work_test/otherMod/hypervisor_mod/client_test.ko /home/leo/codes/work_test/otherMod/hypervisor_mod/client_test.o /home/leo/codes/work_test/otherMod/hypervisor_mod/client_test.mod.o;  true

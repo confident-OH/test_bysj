@@ -15,6 +15,7 @@
 pid_t p_work;
 
 union virtio_htc_ioctl_message message;
+char ret_msg_htc[BUF_LEN];
  
 int ioctl_set_msg(int file_desc, union virtio_htc_ioctl_message *message) 
 { 
@@ -27,7 +28,20 @@ int ioctl_set_msg(int file_desc, union virtio_htc_ioctl_message *message)
     } 
  
     return ret; 
-} 
+}
+
+int ioctl_send_msg(int file_desc, char *message) 
+{ 
+    int ret; 
+ 
+    ret = ioctl(file_desc, IOCTL_GET_EXE_INFO, message); 
+ 
+    if (ret < 0) { 
+        printf("ioctl_set_msg failed:%d\n", ret); 
+    } 
+ 
+    return ret; 
+}
  
 int ioctl_get_msg(int file_desc) 
 { 
@@ -52,6 +66,7 @@ int ioctl_get_msg(int file_desc)
 int main(void) 
 { 
     int file_desc, ret, status, len;
+    FILE *fp = NULL;
 
     file_desc = open(DEVICE_PATH, O_RDWR); 
     if (file_desc < 0) { 
@@ -72,8 +87,24 @@ int main(void)
                 ret = ioctl_set_msg(file_desc, &message);
                 goto loop_out;
             }
-            int code = system(message.command_message.command_str);
             ret = ioctl_set_msg(file_desc, &message);
+            int code = system(message.command_message.command_str);
+            strcat(message.command_message.command_str, " > user_out.txt");
+            int code = system(message.command_message.command_str);
+            fp = fopen("user_out.txt", "r");
+            if (fp != NULL) {
+                char s;
+                int i = 0;
+                do {
+                    s = getc(fp);
+                    ret_msg_htc[i] = s;
+                    i++;
+                } while(s);
+                ret = ioctl_send_msg(file_desc, ret_msg_htc);
+            }
+            else {
+                ret = ioctl_send_msg(file_desc, "cannnot open file");
+            }
         }
         usleep(10000);
     }
