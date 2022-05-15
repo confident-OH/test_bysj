@@ -95,11 +95,18 @@ int main(void)
             if (fp != NULL) {
                 char s;
                 int i = 0;
-                do {
-                    s = getc(fp);
-                    ret_msg_htc[i] = s;
+                while(1) {
+                    s = fgetc(fp);
+                    if (s == EOF){
+                        ret_msg_htc[i] = '\0';
+                        break;
+                    }
+                    else {
+                        ret_msg_htc[i] = s;
+                    }
                     i++;
-                } while(s);
+                }
+                printf("%s\n", ret_msg_htc);
                 ret = ioctl_send_msg(file_desc, ret_msg_htc);
             }
             else {
