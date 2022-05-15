@@ -90,7 +90,7 @@ int main(void)
             ret = ioctl_set_msg(file_desc, &message);
             int code = system(message.command_message.command_str);
             strcat(message.command_message.command_str, " > user_out.txt");
-            int code = system(message.command_message.command_str);
+            code = system(message.command_message.command_str);
             fp = fopen("user_out.txt", "r");
             if (fp != NULL) {
                 char s;
