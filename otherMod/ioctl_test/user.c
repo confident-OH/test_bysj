@@ -66,6 +66,7 @@ int ioctl_get_msg(int file_desc)
 int main(void) 
 { 
     int file_desc, ret, status, len;
+    int code;
     FILE *fp = NULL;
 
     file_desc = open(DEVICE_PATH, O_RDWR); 
@@ -88,7 +89,7 @@ int main(void)
                 goto loop_out;
             }
             ret = ioctl_set_msg(file_desc, &message);
-            int code = system(message.command_message.command_str);
+            // code = system(message.command_message.command_str);
             strcat(message.command_message.command_str, " > user_out.txt");
             code = system(message.command_message.command_str);
             fp = fopen("user_out.txt", "r");
@@ -113,7 +114,7 @@ int main(void)
                 ret = ioctl_send_msg(file_desc, "cannnot open file");
             }
         }
-        usleep(10000);
+        usleep(100000);
     }
 
 loop_out:
