@@ -46,11 +46,12 @@ class QEMUMonitorProtocol:
         for i in page_missings:
             sum += i
         print sum
-        if sum >50000:
-            global_guest_mem = min(2*global_guest_mem, global_guest_mem_max)
+        print global_guest_mem
+        if sum >20000:
+            global_guest_mem = min(1.5*global_guest_mem, global_guest_mem_max)
             qmp_socket.send("balloon value=" + str(global_guest_mem))
-        elif sum < 10000:
-            global_guest_mem = max(global_guest_mem / 2, global_guest_mem_min)
+        elif sum < 5000:
+            global_guest_mem = max(global_guest_mem*0.4, global_guest_mem_min)
             qmp_socket.send("balloon value=" + str(global_guest_mem))
 
     def send(self, cmdline, timeout=30, convert=True):

@@ -114,7 +114,6 @@ class QEMUMonitorProtocol:
             except ValueError:
                 value = opt[1]
             qmpcmd['arguments'][opt[0]] = value
-	print("*cmdline = %s" % cmdline)
         return qmpcmd
 
     def __json_send(self, cmd):
