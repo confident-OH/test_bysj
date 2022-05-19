@@ -1,19 +1,26 @@
-#include<linux/in.h>
-#include<linux/inet.h>
-#include<linux/socket.h>
-#include<net/sock.h>
-#include<linux/init.h>
-#include<linux/module.h>
-#include<linux/delay.h>
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/socket.h>
+#include <linux/net.h>
+#include <linux/un.h>
+#include <net/sock.h>
+#include <linux/delay.h>
+#include <linux/posix_types.h>
+#include <linux/time.h>
+
 #define BUFFER_SIZE 2048
 
 struct socket *sock;
-struct sockaddr_in s_addr;
-unsigned short port_num = 4444;
+struct sockaddr_un s_addr;
+char un_path_test[32] = "/opt/zyq_qmp.socket";
+unsigned long time_start, time_end;
+
 struct kvec send_vec, recv_vec;
 struct msghdr send_msg, recv_msg;
 char qmp_message_init[BUFFER_SIZE] = "{'execute':'qmp_capabilities'}";
-char qmp_init_test[BUFFER_SIZE] = "{'execute':'balloon','arguments':{'value':2000000000}}";
+char qmp_speed_test[BUFFER_SIZE] = "{'execute': 'htc_zyq', 'arguments': {'id': 1, 'htc_str': '1'}}";
 char *send_buf, *recv_buf;
 
 int hyper_send_message(char *hy_send, size_t len)
@@ -28,7 +35,7 @@ int hyper_send_message(char *hy_send, size_t len)
         return ret;
     }
     else {
-        printk("send: %s len: %d \n", (char *)send_vec.iov_base, len);
+        // printk("send: %s len: %d \n", (char *)send_vec.iov_base, len);
     }
     return ret;
 }
@@ -45,7 +52,7 @@ int hyper_receive_message(void)
 
 int hyper_connect_init(void)
 {
-    int ret = 0;
+    int ret = 0, i;
     /* kmalloc a send buffer*/
     send_buf = kmalloc(BUFFER_SIZE, GFP_KERNEL);
     if (send_buf == NULL) {
@@ -67,11 +74,9 @@ int hyper_connect_init(void)
     memset(&recv_msg, 0, sizeof(recv_msg));
 
     // build a sock
-    s_addr.sin_family = AF_INET;
-    s_addr.sin_port = htons(port_num);
-    s_addr.sin_addr.s_addr = in_aton("127.0.0.1");
-    sock = (struct socket *)kmalloc(sizeof(struct socket), GFP_KERNEL);
-    ret = sock_create_kern(&init_net, AF_INET, SOCK_STREAM, IPPROTO_TCP, &sock);
+    s_addr.sun_family = AF_UNIX;
+    strcpy(s_addr.sun_path, un_path_test);
+    ret = sock_create(AF_UNIX, SOCK_STREAM, 0, &sock);
     if (ret < 0) {
         printk("client:socket create error!\n");
         return ret;
@@ -86,27 +91,62 @@ int hyper_connect_init(void)
     printk("client: connect ok!\n");
     msleep(500);
     hyper_receive_message();
-    printk("client: received message:\n %s\n", recv_buf);
+    // printk("client: received message:\n %s\n", recv_buf);
 
     msleep(1000);
     // start qmp command
     hyper_send_message(qmp_message_init, strlen(qmp_message_init) + 1);
     msleep(500);
     hyper_receive_message();
-    printk("client: received message:\n %s\n", recv_buf);
+    // printk("client: received message:\n %s\n", recv_buf);
     
     // qmp test
-    hyper_send_message(qmp_init_test, strlen(qmp_init_test) + 1);
-    hyper_receive_message();
-    printk("client: received message:\n %s\n", recv_buf);
-    hyper_receive_message();
-    printk("client: received message:\n %s\n", recv_buf);
-    hyper_receive_message();
-    printk("client: received message:\n %s\n", recv_buf);
-    hyper_receive_message();
-    printk("client: received message:\n %s\n", recv_buf);
-    hyper_receive_message();
-    printk("client: received message:\n %s\n", recv_buf);
+    // 100
+    time_start = rdtsc();
+    for (i = 0; i<100; i++) {
+        hyper_send_message(qmp_speed_test, strlen(qmp_speed_test) + 1);
+        hyper_receive_message();
+        
+    }
+    time_end = rdtsc();
+    printk("100: %ld(cpu circle)\n", time_end - time_start);
+     // 1000
+    time_start = rdtsc();
+    for (i = 0; i<1000; i++) {
+        hyper_send_message(qmp_speed_test, strlen(qmp_speed_test) + 1);
+        hyper_receive_message();
+        
+    }
+    time_end = rdtsc();
+    printk("1000: %ld(cpu circle)\n", time_end - time_start);
+     // 10000
+    time_start = rdtsc();
+    for (i = 0; i<10000; i++) {
+        hyper_send_message(qmp_speed_test, strlen(qmp_speed_test) + 1);
+        hyper_receive_message();
+        
+    }
+    time_end = rdtsc();
+    printk("10000: %ld(cpu circle)\n", time_end - time_start);
+     // 100000
+    time_start = rdtsc();
+    for (i = 0; i<100000; i++) {
+        hyper_send_message(qmp_speed_test, strlen(qmp_speed_test) + 1);
+        hyper_receive_message();
+        
+    }
+    time_end = rdtsc();
+    printk("100000: %ld(cpu circle)\n", time_end - time_start);
+
+     // 1000000
+    time_start = rdtsc();
+    for (i = 0; i<1000000; i++) {
+        hyper_send_message(qmp_speed_test, strlen(qmp_speed_test) + 1);
+        hyper_receive_message();
+        
+    }
+    time_end = rdtsc();
+    printk("1000000: %ld(cpu circle)\n", time_end - time_start);
 
     return 0;
 }

@@ -32,12 +32,10 @@ __used __section("__versions") = {
 	{ 0xdcedb544, "sock_release" },
 	{ 0x2e31761, "kernel_sock_shutdown" },
 	{ 0xcbd4898c, "fortify_panic" },
-	{ 0xa916b694, "strnlen" },
 	{ 0xf9a482f9, "msleep" },
 	{ 0x2ea2c95c, "__x86_indirect_thunk_rax" },
-	{ 0xa36c2341, "sock_create_kern" },
-	{ 0xabc1ea5e, "init_net" },
-	{ 0x1b6314fd, "in_aton" },
+	{ 0x2021e9e3, "sock_create" },
+	{ 0xa916b694, "strnlen" },
 	{ 0x2a23ed9e, "kmem_cache_alloc_trace" },
 	{ 0x5e08a474, "kmalloc_caches" },
 	{ 0x3f13a12b, "kernel_recvmsg" },
@@ -49,4 +47,4 @@ __used __section("__versions") = {
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "EB06BF0D769EFCB70391821");
+MODULE_INFO(srcversion, "3AEDB058218FA123A251376");
